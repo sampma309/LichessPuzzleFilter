@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <div>
+        <p>
+            <iframe width="400" height="480" frameborder="0" src=https://listudy.org/en/iframe/custom-tactic#{{ puzzle_url }}></iframe>
+        </p>
+    </div>
+    <div>
+        <form action="/" method="POST">
+            <input type="checkbox" id="pawn" name="pawn" value="pP">
+            <label for="pawn"> Pawn</label><br>
+            <input type="checkbox" id="bishop" name="bishop" value="bB">
+            <label for="bishop"> Bishop</label><br>
+            <input type="checkbox" id="knight" name="knight" value="nN">
+            <label for="knight"> Knight</label><br>
+            <input type="checkbox" id="rook" name="rook" value="rR">
+            <label for="rook"> Rook</label><br>
+            <input type="checkbox" id="queen" name="queen" value="qQ">
+            <label for="queen"> Queen</label><br>
+            <input type="submit" value="Submit">
+          </form> 
+    </div>
+    <div>
+        <p>{{ pieces }}</p>
+    </div>
+</html>
