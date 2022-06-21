@@ -11,21 +11,27 @@ app = Flask(__name__)
 def index():
     if request.method == "POST":
 
-        pawn = request.form.get('pawn', '')
-        bishop = request.form.get('bishop', '')
-        knight = request.form.get('knight', '')
-        rook = request.form.get('rook', '')
-        queen = request.form.get('queen', '')
+        pieces = ""
+        pieces += request.form.get('my_pawn', '')
+        pieces += request.form.get('my_bishop', '')
+        pieces += request.form.get('my_knight', '')
+        pieces += request.form.get('my_rook', '')
+        pieces += request.form.get('my_queen', '')
+        pieces += request.form.get('op_pawn', '')
+        pieces += request.form.get('op_bishop', '')
+        pieces += request.form.get('op_knight', '')
+        pieces += request.form.get('op_rook', '')
+        pieces += request.form.get('op_queen', '')
 
-        pieces = pawn + bishop + knight + rook + queen
+        pieces = ''.join(sorted(pieces))
+        print(pieces)
+        print(type(pieces))
 
         puzzle = helpers.find_puzzle(pieces)
         
         encoded_url = helpers.encode_puzzle(puzzle)
         
         base_url = "https://listudy.org/en/iframe/custom-tactic#"
-        
-        puzzle_url = base_url + encoded_url
             
         return render_template('index.html', puzzle_url=encoded_url, pieces=pieces)
     

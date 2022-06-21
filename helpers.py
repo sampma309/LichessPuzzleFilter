@@ -27,7 +27,7 @@ def create_connection(path):
     return connection
 
 
-def find_puzzle(pieces_in):
+def find_puzzle(pieces):
     """Finds and returns puzzles that contain only pieces specified by the user
 
         Arguments:
@@ -45,33 +45,31 @@ def find_puzzle(pieces_in):
     """
 
     # Create a list of pieces that are NOT in the puzzle
-    pieces = ['b', 'B', 'n', 'N', 'p', 'P', 'r', 'R', 'q', 'Q']
-
-    for piece in pieces_in:
-        pieces.remove(piece)
 
     # Build the SQL query
     # Since I am looping over a subset of the hard-coded list 'pieces' (defined 
     # above), this query should be safe from SQL injection attacks even though I 
     # am using formatted strings to build it, rather than the parameterized format
-    for i in range(len(pieces)):
-        if i == 0:
-            query = f"SELECT FEN, Moves FROM puzzles WHERE FEN NOT LIKE '%{pieces[i]}%'"
-        else:
-            query += f" AND FEN NOT LIKE '%{pieces[i]}%'"
+    # query = ""
+    # for i in range(len(pieces)):
+    #     if pieces[i] != "":
+    #         if query == "":
+    #             query += f"SELECT FEN, Moves FROM puzzles WHERE Pieces LIKE '%{pieces[i]}%'"
+    #         else:
+    #             query += f" AND Pieces LIKE '%{pieces[i]}%'"
 
-    query += ' LIMIT 1;'
+    # query += ' LIMIT 1;'
 
     # Connect to database and execute query
     db = create_connection('puzzles.db')
     cursor = db.cursor()
     puzzle = []
-    for row in cursor.execute(query):
+    for row in cursor.execute("SELECT FEN, Moves FROM puzzles WHERE Pieces = (?) ORDER BY RANDOM()", [pieces]):
         puzzle.append(row[0])
         puzzle.append(row[1])
-        print(cursor.fetchall())
     
     # Return list of puzzles
+    print(puzzle)
     return puzzle
 
 
