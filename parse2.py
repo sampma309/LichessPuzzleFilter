@@ -1,6 +1,5 @@
 # Create a column containing only the pieces in the FEN
 
-import sqlite3
 import helpers
 
 db = helpers.create_connection('puzzles.db')
