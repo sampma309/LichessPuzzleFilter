@@ -2,12 +2,20 @@ import csv
 import sqlite3
 from sqlite3 import Error
 import chess
-from helpers import create_connection
+import helpers
 
 db = helpers.create_connection("puzzles.db")
 cursor = db.cursor()
 
-original_lines = cursor.execute("SELECT PuzzleId, FEN, Moves FROM puzzles;")
+original_lines = []
+
+for row in cursor.execute("SELECT PuzzleId, FEN, Moves FROM puzzles;"):
+    tmp = []
+    tmp.append(row[0])
+    tmp.append(row[1])
+    tmp.append(row[2])
+    original_lines.append(tmp)
+
 
 for line in original_lines:
     print(line)

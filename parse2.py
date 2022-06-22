@@ -17,7 +17,7 @@ for fen in fen_list:
     pieces.append('')
     tmp = fen.split(' ')
     print(tmp)
-    if tmp[1] == 'w':
+    if tmp[1] == 'b':
         tmp[0] = tmp[0].swapcase()
     for char in tmp[0]:
         if char.isalpha() and char not in pieces[counter] and char not in ['k', 'K']:
