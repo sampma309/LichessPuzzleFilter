@@ -11,11 +11,8 @@ def main():
 
     # Create table 'puzzles' in puzzles.db
     create_table(db)
-<<<<<<< HEAD
 
-=======
     
->>>>>>> aeb85d67b87bcfd6471bf2369c68c793d96158d3
     # Read data from puzzles.csv and import to puzzles.db
     import_data('puzzles.csv', db)
 
