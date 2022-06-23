@@ -3,7 +3,6 @@
    tactics trainer on the Lichess website makes the first move for you so
    you can see the last move that was made before the tactic."""
 
-from itertools import count
 import chess
 import helpers
 
@@ -17,10 +16,9 @@ counter = 0
 
 for row in cursor.execute("SELECT PuzzleId, FEN, Moves FROM puzzles;"):
     tmp = []
-    tmp.append(row[0])
-    tmp.append(row[1])
-    tmp.append(row[2])
+    tmp.append(row[0], row[1], row[2])
     original_lines.append(tmp)
+    
     counter += 1
     if counter % 5000 == 0:
         print(f"{counter} lines read")
