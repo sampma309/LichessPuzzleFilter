@@ -55,9 +55,7 @@ def import_data(file, db):
             # Print number of puzzles detected in the .csv file
             num_lines = len(list(reader))
             print(f"{num_lines} puzzles detected.")
-
-            # Initialize counter to keep track of progress
-            counter = 0
+            csvfile.seek(0)
 
             # Import puzzle data into puzzles.db
             for row in reader:
@@ -65,17 +63,14 @@ def import_data(file, db):
                            (row[0], row[1], row[2], int(row[3])))
                 
                 # Keep track of progress
-                counter += 1
-                if counter % 10000 == 0:
-                    print(f"{counter} / {num_lines} puzzles imported", end='/r')
+                if reader.line_num % 10000 == 0:
+                    print(f"{reader.line_num} / {num_lines} puzzles imported", end='/r')
 
     except IOError:
         print(f"Unable to open file '{file}'. Terminating program.")
 
     finally:
         csvfile.close()
-    
-    db.commit()
     
 def update_fen(db):
 
@@ -86,9 +81,7 @@ def update_fen(db):
     counter = 0
 
     for row in cur.execute("SELECT PuzzleId, FEN, Moves FROM puzzles;"):
-        tmp = []
-        tmp.append(row[0], row[1], row[2])
-        original_lines.append(tmp)
+        original_lines.append([row[0], row[1], row[2]])
         
         counter += 1
         if counter % 5000 == 0:
