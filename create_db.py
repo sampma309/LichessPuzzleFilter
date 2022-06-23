@@ -9,7 +9,7 @@ def main():
     db = helpers.create_connection('puzzles.db')
 
     # Create table 'puzzles' in puzzles.db
-    #create_table(db)
+    create_table(db)
 
     # Read data from puzzles.csv and import to puzzles.db
     import_data('puzzles.csv', db)
