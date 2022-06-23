@@ -1,4 +1,3 @@
-import csv
 import sqlite3
 from sqlite3 import Error
 import chess
@@ -17,6 +16,7 @@ def create_connection(path):
 
          - a Connection object that represents the database
     """
+
     connection = None
     try:
         connection = sqlite3.connect(path)
@@ -43,22 +43,6 @@ def find_puzzle(pieces):
                       of the puzzle. The second column contains a list of the 
                       correct moves in UCI notation.
     """
-
-    # Create a list of pieces that are NOT in the puzzle
-
-    # Build the SQL query
-    # Since I am looping over a subset of the hard-coded list 'pieces' (defined 
-    # above), this query should be safe from SQL injection attacks even though I 
-    # am using formatted strings to build it, rather than the parameterized format
-    # query = ""
-    # for i in range(len(pieces)):
-    #     if pieces[i] != "":
-    #         if query == "":
-    #             query += f"SELECT FEN, Moves FROM puzzles WHERE Pieces LIKE '%{pieces[i]}%'"
-    #         else:
-    #             query += f" AND Pieces LIKE '%{pieces[i]}%'"
-
-    # query += ' LIMIT 1;'
 
     # Connect to database and execute query
     db = create_connection('puzzles.db')

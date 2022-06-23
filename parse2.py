@@ -14,15 +14,15 @@ fen_list = []
 counter = 0
 
 # Grab FENs from puzzle.db
-for row in cur.execute("SELECT FEN FROM puzzles;"):
-    fen_list.append(row[0])
+for row in cur.execute("SELECT FEN, PuzzleId FROM puzzles;"):
+    fen_list.append([row[0], row[1]])
 
 # Iterate over each FEN
 for fen in fen_list:
 
     # Create new list of pieces and split the FEN into parts on each space
     pieces.append('')
-    tmp = fen.split(' ')
+    tmp = fen[0].split(' ')
 
     # If it is black to play, swap FEN case to maintain convention of upper-case
     # letters belonging to the player
@@ -38,8 +38,11 @@ for fen in fen_list:
     pieces[counter] = ''.join(sorted(pieces[counter]))
 
     # Add the pieces column 
-    cur.execute("UPDATE puzzles SET Pieces = ? WHERE FEN = ?;", [pieces[counter], fen])
+    cur.execute("UPDATE puzzles SET Pieces = ? WHERE PuzzleId = ?;", [pieces[counter], fen[1]])
     counter += 1
+
+    if counter % 10000 == 0:
+        print(f"{counter} piece lists added")
 
 # Save database changes and close database
 db.commit()
