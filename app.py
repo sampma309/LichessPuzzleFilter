@@ -23,17 +23,18 @@ def index():
         pieces += request.form.get('op_rook', '')
         pieces += request.form.get('op_queen', '')
 
-        pieces = ''.join(sorted(pieces))
-        print(pieces)
-        print(type(pieces))
+        lower_rating = int(request.form.get('lower_rating', 0))
+        upper_rating = int(request.form.get('upper_rating', 5000))
 
-        puzzle = helpers.find_puzzle(pieces)
+        pieces = ''.join(sorted(pieces))
+
+        puzzle = helpers.find_puzzle(pieces, lower_rating, upper_rating)
         
-        encoded_url = helpers.encode_puzzle(puzzle)
+        encoded_url = helpers.encode_puzzle(puzzle[0])
         
         base_url = "https://listudy.org/en/iframe/custom-tactic#"
             
-        return render_template('index.html', puzzle_url=encoded_url, pieces=pieces)
+        return render_template('index.html', puzzle_url=encoded_url, pieces=pieces, rating=puzzle[0][2], PuzzleId=puzzle[0][3], moves=puzzle[0][1])
     
     if request.method == "GET":
 

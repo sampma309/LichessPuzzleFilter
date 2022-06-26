@@ -27,12 +27,12 @@ def create_connection(path):
     return connection
 
 
-def find_puzzle(pieces):
+def find_puzzle(pieces, lower_rating, upper_rating):
     """Finds and returns puzzles that contain only pieces specified by the user
 
         Arguments:
 
-         - pieces_in: a string containing both the upper and lower case letters
+         - pieces: a string containing both the upper and lower case letters
                       of the user-specified pieces (e.g., pPrR) would be for
                       pawns and rooks
         
@@ -47,14 +47,14 @@ def find_puzzle(pieces):
     # Connect to database and execute query
     db = create_connection('puzzles.db')
     cursor = db.cursor()
-    puzzle = []
-    for row in cursor.execute("SELECT FEN, Moves FROM puzzles WHERE Pieces = (?) ORDER BY RANDOM()", [pieces]):
-        puzzle.append(row[0])
-        puzzle.append(row[1])
+    puzzles = []
+    for row in cursor.execute("SELECT FEN, Moves, Rating, PuzzleId FROM puzzles WHERE Pieces = (?) AND RATING >= ? AND RATING <= ? ORDER BY RANDOM()", [pieces, lower_rating, upper_rating]):
+        puzzles.append(row)
+        
     
     # Return list of puzzles
-    print(puzzle)
-    return puzzle
+    print(puzzles)
+    return puzzles
 
 
 def encode_puzzle(puzzle):
