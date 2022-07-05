@@ -35,7 +35,7 @@ def main():
 def create_table(db):
     
     try:
-        db.execute('CREATE TABLE puzzles("PuzzleId" TEXT, "FEN" TEXT, "Moves" TEXT, "Rating" INTEGER, "Pieces" TEXT);')
+        db.execute('CREATE TABLE puzzles("PuzzleId" TEXT, "FEN" TEXT, "Moves" TEXT, "LastMove" TEXT, "Rating" INTEGER, "Pieces" TEXT);')
         print("Table 'puzzles' created successfully")
     except Error as e:
         print(f"The error '{e}' has occurred. Terminating program.")
@@ -108,7 +108,7 @@ def update_fen(db):
         moves = ' '.join(moves)
 
         # Update the FEN and move list for the puzzle
-        cur.execute("UPDATE puzzles SET FEN = ?, Moves = ? WHERE PuzzleId = ?;", [new_fen, moves, PuzzleId])
+        cur.execute("UPDATE puzzles SET FEN = ?, Moves = ?, LastMove = ? WHERE PuzzleId = ?;", [new_fen, moves, first_move, PuzzleId])
         
         counter += 1
         if counter % 10000 == 0:
