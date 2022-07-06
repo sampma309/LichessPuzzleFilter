@@ -9,6 +9,7 @@ import helpers
 import chess
 from sqlite3 import Error
 import csv
+import base64
 
 
 def main():
@@ -34,6 +35,9 @@ def main():
     # Create index on Pieces column so webpage will return puzzles more quickly
     db.execute('CREATE INDEX PiecesIndex ON puzzles (Pieces);')
 
+    # Create encoded URLs column
+    encode_puzzles(db)
+
     db.commit()
     db.close()
 
@@ -41,7 +45,7 @@ def main():
 def create_table(db):
     
     try:
-        db.execute('CREATE TABLE puzzles("PuzzleId" TEXT, "FEN" TEXT, "Moves" TEXT, "LastMove" TEXT, "Rating" INTEGER, "Pieces" TEXT);')
+        db.execute('CREATE TABLE puzzles("PuzzleId" TEXT, "FEN" TEXT, "Moves" TEXT, "LastMove" TEXT, "Rating" INTEGER, "Pieces" TEXT, "EncodedURL" TEXT);')
         print("Table 'puzzles' created successfully")
     except Error as e:
         print(f"The error '{e}' has occurred. Terminating program.")
@@ -162,6 +166,43 @@ def create_piece_list(db):
             print(f"{counter} piece lists added")
 
     print("Piece lists complete.")
+
+def encode_puzzles(db):
+    cur = db.cursor()
+    encoded_urls = []
+    counter = 0
+
+    for row in cur.execute("SELECT FEN, Moves, LastMove, PuzzleId FROM puzzles;"):
+        fen = row[0]
+        moves = row[1].split()
+        last_move = row[2]
+        board = chess.Board(fen)
+
+        variation = []
+        while moves:
+            move = moves.pop(0)
+            variation.append(board.san(chess.Move.from_uci(move)))
+            move_on_board = chess.Move.from_uci(move)
+            board.push(move_on_board)
+        variation = ' '.join(variation)
+
+        # Create the string to encode
+        encode_string = f"{fen};{variation};{last_move}"
+                
+        # Encode the string
+        listudy_encode = base64.standard_b64encode(encode_string.encode())
+        encoded_urls.append([row[3], listudy_encode])
+
+        counter += 1
+
+        if counter % 10000 == 0:
+            print(f"{counter} puzzles encoded")
+
+    for url in encoded_urls:
+
+        # Add encoded URL column
+        cur.execute("UPDATE puzzles SET EncodedURL = ? WHERE PuzzleId = ?;", [url[1], url[0]])
+
 
 if __name__ == '__main__':
     main()
