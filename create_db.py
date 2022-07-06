@@ -1,3 +1,10 @@
+"""This program creates a SQLite database from a CSV file which can be downloaded
+   from Lichess. In order to parse the puzzles correctly, the CSV file must be named
+   'puzzles.csv' and no additional columns may be added or removed from the as-downloaded 
+   file, although lines can be deleted if you wish to work with only a subset of the 
+   full 2.6 million puzzle database."""
+
+
 import helpers
 import chess
 from sqlite3 import Error
@@ -5,13 +12,12 @@ import csv
 
 
 def main():
-    
+
     # Create connection to puzzles.db
     db = helpers.create_connection('puzzles.db')
 
     # Create table 'puzzles' in puzzles.db
     create_table(db)
-
     
     # Read data from puzzles.csv and import to puzzles.db
     import_data('puzzles.csv', db)
@@ -65,7 +71,7 @@ def import_data(file, db):
                 
                 # Keep track of progress
                 if reader.line_num % 10000 == 0:
-                    print(f"{reader.line_num} / {num_lines} puzzles imported", end='/r')
+                    print(f"{reader.line_num - num_lines} / {num_lines} puzzles imported")
 
     except IOError:
         print(f"Unable to open file '{file}'. Terminating program.")
@@ -97,8 +103,8 @@ def update_fen(db):
         original_fen = line[1]
         moves = line[2]
         
-        # Make the first move in the puzzle, remove it from the move list and
-        # update the FEN
+        # Make the first move in the puzzle, move it to the LastMove column 
+        # and update the FEN
         moves = moves.split()
         board = chess.Board(original_fen)
         first_move = moves.pop(0)
