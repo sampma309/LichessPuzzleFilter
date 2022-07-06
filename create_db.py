@@ -190,7 +190,7 @@ def encode_puzzles(db):
         encode_string = f"{fen};{variation};{last_move}"
                 
         # Encode the string
-        listudy_encode = base64.standard_b64encode(encode_string.encode())
+        listudy_encode = base64.standard_b64encode(encode_string.encode()).decode('utf-8')
         encoded_urls.append([row[3], listudy_encode])
 
         counter += 1

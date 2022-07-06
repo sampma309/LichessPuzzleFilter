@@ -1,7 +1,7 @@
 # CS50x Final Project
 # Michael Samp
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 import base64
 import helpers
 
@@ -33,14 +33,15 @@ def index():
         pieces = ''.join(sorted(pieces))
 
         puzzle = helpers.find_puzzle(pieces, lower_rating, upper_rating)
-        
-        encoded_url = helpers.encode_puzzle(puzzle[0])
-        
-        base_url = "https://listudy.org/en/iframe/custom-tactic#"
             
-        return render_template('index.html', puzzle_url=encoded_url, pieces=pieces, rating=puzzle[0][3], PuzzleId=puzzle[0][4], moves=puzzle[0][1])
+        return redirect("/puzzles")
     
     if request.method == "GET":
 
         return render_template('index.html', puzzle_url='')
 
+@app.route("/puzzles")
+def puzzles():
+     
+
+    return render_template('puzzles.html')
