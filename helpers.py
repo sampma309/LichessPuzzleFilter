@@ -48,7 +48,7 @@ def find_puzzle(pieces, lower_rating, upper_rating):
     db = create_connection('puzzles.db')
     cursor = db.cursor()
     puzzles = []
-    for row in cursor.execute("SELECT FEN, Moves, Rating, PuzzleId FROM puzzles WHERE Pieces = (?) AND RATING >= ? AND RATING <= ? ORDER BY RANDOM()", [pieces, lower_rating, upper_rating]):
+    for row in cursor.execute("SELECT FEN, Moves, LastMove, Rating, PuzzleId FROM puzzles WHERE Pieces = (?) AND RATING >= ? AND RATING <= ? ORDER BY RANDOM()", [pieces, lower_rating, upper_rating]):
         puzzles.append(row)
         
     
@@ -80,7 +80,7 @@ def encode_puzzle(puzzle):
 
     # Create the three pieces of the hashed string per Listudy documentation
     variation = []
-    last_move = moves[-1]
+    last_move = puzzle[2]
     while moves:
         move = moves.pop(0)
         variation.append(board.san(chess.Move.from_uci(move)))
