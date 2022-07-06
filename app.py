@@ -23,8 +23,12 @@ def index():
         pieces += request.form.get('op_rook', '')
         pieces += request.form.get('op_queen', '')
 
-        lower_rating = int(request.form.get('lower_rating', 0))
-        upper_rating = int(request.form.get('upper_rating', 5000))
+        lower_rating = request.form.get('lower_rating')
+        if lower_rating == '':
+            lower_rating = 0
+        upper_rating = request.form.get('upper_rating')
+        if upper_rating == '':
+            upper_rating == 5000
 
         pieces = ''.join(sorted(pieces))
 
@@ -34,7 +38,7 @@ def index():
         
         base_url = "https://listudy.org/en/iframe/custom-tactic#"
             
-        return render_template('index.html', puzzle_url=encoded_url, pieces=pieces, rating=puzzle[0][2], PuzzleId=puzzle[0][3], moves=puzzle[0][1])
+        return render_template('index.html', puzzle_url=encoded_url, pieces=pieces, rating=puzzle[0][3], PuzzleId=puzzle[0][4], moves=puzzle[0][1])
     
     if request.method == "GET":
 
