@@ -2,14 +2,20 @@
 # Michael Samp
 
 from flask import Flask, render_template, request, redirect
-import base64
+import json
 import helpers
 
 app = Flask(__name__)
 
+counter = 0
+
 @app.route("/", methods=["GET", "POST"])
 def index():
+
     if request.method == "POST":
+        with open('static/counter.txt', 'w') as counter:
+            counter.write('-1')
+        counter.close()
 
         pieces = ""
         pieces += request.form.get('my_pawn', '')
@@ -40,8 +46,20 @@ def index():
 
         return render_template('index.html', puzzle_url='')
 
+
 @app.route("/puzzles")
 def puzzles():
      
+    with open('static/counter.txt', 'r') as counter:
+        i = int(counter.read())
+    counter.close()
 
-    return render_template('puzzles.html')
+    i += 1
+
+    with open('static/counter.txt', 'w') as counter:
+        counter.write(str(i))
+
+    file = open('static/puzzles.json')
+    puzzles = json.load(file)
+
+    return render_template('puzzles.html', rating=puzzles['Rating'][i], moves=puzzles['Moves'][i], PuzzleId=puzzles['PuzzleId'][i], URL=puzzles['EncodedURL'][i])
