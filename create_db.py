@@ -1,17 +1,24 @@
+"""This program creates a SQLite database from a CSV file which can be downloaded
+   from Lichess. In order to parse the puzzles correctly, the CSV file must be named
+   'puzzles.csv' and no additional columns may be added or removed from the as-downloaded 
+   file, although lines can be deleted if you wish to work with only a subset of the 
+   full 2.6 million puzzle database."""
+
+
 import helpers
 import chess
 from sqlite3 import Error
 import csv
+import base64
 
 
 def main():
-    
+
     # Create connection to puzzles.db
     db = helpers.create_connection('puzzles.db')
 
     # Create table 'puzzles' in puzzles.db
     create_table(db)
-
     
     # Read data from puzzles.csv and import to puzzles.db
     import_data('puzzles.csv', db)
@@ -28,6 +35,9 @@ def main():
     # Create index on Pieces column so webpage will return puzzles more quickly
     db.execute('CREATE INDEX PiecesIndex ON puzzles (Pieces);')
 
+    # Create encoded URLs column
+    encode_puzzles(db)
+
     db.commit()
     db.close()
 
@@ -35,7 +45,7 @@ def main():
 def create_table(db):
     
     try:
-        db.execute('CREATE TABLE puzzles("PuzzleId" TEXT, "FEN" TEXT, "Moves" TEXT, "Rating" INTEGER, "Pieces" TEXT);')
+        db.execute('CREATE TABLE puzzles("PuzzleId" TEXT, "FEN" TEXT, "Moves" TEXT, "LastMove" TEXT, "Rating" INTEGER, "Pieces" TEXT, "EncodedURL" TEXT);')
         print("Table 'puzzles' created successfully")
     except Error as e:
         print(f"The error '{e}' has occurred. Terminating program.")
@@ -65,7 +75,7 @@ def import_data(file, db):
                 
                 # Keep track of progress
                 if reader.line_num % 10000 == 0:
-                    print(f"{reader.line_num} / {num_lines} puzzles imported", end='/r')
+                    print(f"{reader.line_num - num_lines} / {num_lines} puzzles imported")
 
     except IOError:
         print(f"Unable to open file '{file}'. Terminating program.")
@@ -97,8 +107,8 @@ def update_fen(db):
         original_fen = line[1]
         moves = line[2]
         
-        # Make the first move in the puzzle, remove it from the move list and
-        # update the FEN
+        # Make the first move in the puzzle, move it to the LastMove column 
+        # and update the FEN
         moves = moves.split()
         board = chess.Board(original_fen)
         first_move = moves.pop(0)
@@ -108,7 +118,7 @@ def update_fen(db):
         moves = ' '.join(moves)
 
         # Update the FEN and move list for the puzzle
-        cur.execute("UPDATE puzzles SET FEN = ?, Moves = ? WHERE PuzzleId = ?;", [new_fen, moves, PuzzleId])
+        cur.execute("UPDATE puzzles SET FEN = ?, Moves = ?, LastMove = ? WHERE PuzzleId = ?;", [new_fen, moves, first_move, PuzzleId])
         
         counter += 1
         if counter % 10000 == 0:
@@ -156,6 +166,43 @@ def create_piece_list(db):
             print(f"{counter} piece lists added")
 
     print("Piece lists complete.")
+
+def encode_puzzles(db):
+    cur = db.cursor()
+    encoded_urls = []
+    counter = 0
+
+    for row in cur.execute("SELECT FEN, Moves, LastMove, PuzzleId FROM puzzles;"):
+        fen = row[0]
+        moves = row[1].split()
+        last_move = row[2]
+        board = chess.Board(fen)
+
+        variation = []
+        while moves:
+            move = moves.pop(0)
+            variation.append(board.san(chess.Move.from_uci(move)))
+            move_on_board = chess.Move.from_uci(move)
+            board.push(move_on_board)
+        variation = ' '.join(variation)
+
+        # Create the string to encode
+        encode_string = f"{fen};{variation};{last_move}"
+                
+        # Encode the string
+        listudy_encode = base64.standard_b64encode(encode_string.encode()).decode('utf-8')
+        encoded_urls.append([row[3], listudy_encode])
+
+        counter += 1
+
+        if counter % 10000 == 0:
+            print(f"{counter} puzzles encoded")
+
+    for url in encoded_urls:
+
+        # Add encoded URL column
+        cur.execute("UPDATE puzzles SET EncodedURL = ? WHERE PuzzleId = ?;", [url[1], url[0]])
+
 
 if __name__ == '__main__':
     main()

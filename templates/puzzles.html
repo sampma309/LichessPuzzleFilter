@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>CS50x Final Project</title>
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <div class="row">
+        <div class="column">
+            <p>
+                <a id="link" href="https://lichess.org/training/{{ PuzzleId }}" class="button">Play this puzzle on Lichess</a>
+                <p id="rating">Rating = {{ rating }}</p>
+                <p id="moves">Moves = {{ moves }}</p>
+                <iframe id="puzzle" width="400" height="480" frameborder="0" src="https://listudy.org/en/iframe/custom-tactic#{{ URL }}"></iframe>
+            </p>
+        </div>
+        <button type="submit" onClick="refreshPage()">Next Puzzle</button>
+    </div>
+</body>
+</html>
+<script>
+    function refreshPage() {
+        window.location.reload();
+    }
+</script>

@@ -2,6 +2,7 @@ import sqlite3
 from sqlite3 import Error
 import chess
 import base64
+import json
 
 def create_connection(path):
     """Creates and returns a connection to the local copy of the Lichess puzzle
@@ -47,14 +48,21 @@ def find_puzzle(pieces, lower_rating, upper_rating):
     # Connect to database and execute query
     db = create_connection('puzzles.db')
     cursor = db.cursor()
-    puzzles = []
-    for row in cursor.execute("SELECT FEN, Moves, Rating, PuzzleId FROM puzzles WHERE Pieces = (?) AND RATING >= ? AND RATING <= ? ORDER BY RANDOM()", [pieces, lower_rating, upper_rating]):
-        puzzles.append(row)
+    puzzles = {'PuzzleId': [], 'Moves': [], 'Rating': [], 'EncodedURL': []}
+    for row in cursor.execute("SELECT Moves, Rating, PuzzleId, EncodedURL FROM puzzles WHERE Pieces = (?) AND RATING >= ? AND RATING <= ? ORDER BY RANDOM()", [pieces, lower_rating, upper_rating]):
+        puzzles['PuzzleId'].append(row[2])
+        puzzles['Moves'].append(row[0])
+        puzzles['Rating'].append(row[1])
+        puzzles['EncodedURL'].append(row[3])
         
     
     # Return list of puzzles
     print(puzzles)
-    return puzzles
+
+    # Write dictionary to JSON file
+    with open('static/puzzles.json', 'w') as file:
+        json.dump(puzzles, file)
+    return None
 
 
 def encode_puzzle(puzzle):
@@ -80,7 +88,7 @@ def encode_puzzle(puzzle):
 
     # Create the three pieces of the hashed string per Listudy documentation
     variation = []
-    last_move = moves[-1]
+    last_move = puzzle[2]
     while moves:
         move = moves.pop(0)
         variation.append(board.san(chess.Move.from_uci(move)))
