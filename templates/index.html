@@ -3,49 +3,68 @@
 <head>
     <title>CS50x Final Project</title>
     <link rel="stylesheet" href="static/styles.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width-device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
 </head>
 <body>
-    <div class="row">
-        <div class="column">
-            <p>
-                <a href="https://lichess.org/training/{{ PuzzleId }}" class="button">Play this puzzle on Lichess</a>
-                <p>Rating = {{ rating }}</p>
-                <p>Moves = {{ moves }}</p>
-                <iframe width="400" height="480" frameborder="0" src=https://listudy.org/en/iframe/custom-tactic#{{ puzzle_url }}></iframe>
-            </p>
-        </div>
-        <div class="column">
-            <form action="/" method="POST">
-                <p>Your pieces:</p><br>
-                <input type="checkbox" id="my_pawn" name="my_pawn" value="P">
-                <label for="my_pawn"> Pawn</label><br>
-                <input type="checkbox" id="my_bishop" name="my_bishop" value="B">
-                <label for="my_bishop"> Bishop</label><br>
-                <input type="checkbox" id="my_knight" name="my_knight" value="N">
-                <label for="my_knight"> Knight</label><br>
-                <input type="checkbox" id="my_rook" name="my_rook" value="R">
-                <label for="my_rook"> Rook</label><br>
-                <input type="checkbox" id="my_queen" name="my_queen" value="Q">
-                <label for="my_queen"> Queen</label><br>
-                <p>Opponent pieces:</p><br>
-                <input type="checkbox" id="op_pawn" name="op_pawn" value="p">
-                <label for="op_pawn"> Pawn</label><br>
-                <input type="checkbox" id="op_bishop" name="op_bishop" value="b">
-                <label for="op_bishop"> Bishop</label><br>
-                <input type="checkbox" id="op_knight" name="op_knight" value="n">
-                <label for="op_knight"> Knight</label><br>
-                <input type="checkbox" id="op_rook" name="op_rook" value="r">
-                <label for="op_rook"> Rook</label><br>
-                <input type="checkbox" id="op_queen" name="op_queen" value="q">
-                <label for="op_queen"> Queen</label><br>
-                <p>Rating Range:</p>
-                <input type="text" id="lower_rating" name="lower_rating" placeholder="Lower"><input type="text" id="upper_rating" name="upper_rating" placeholder="Upper"><br><br>
-                <input type="submit" value="Submit">
-            </form>
-
-        </div>
-        <div>
-            <p>{{ pieces }}</p>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <p>
+                    <h2>What this tool does</h2>
+                    <p>This tool allows you to filter tactics from the Lichess database
+                        by pieces used by you and your opponent. This is most useful for
+                        looking at different endgame tactics (e.g., rook and pawn vs. bishop
+                        and pawn endgames).
+                    </p>
+                    <h2>How to Use</h2>
+                    <ol>
+                        <li>Select pieces for you and your opponent to have. Note: The more
+                            pieces you select, the more puzzles you will get returned which 
+                            may make the puzzles page load more slowly.
+                        </li>
+                        <li>
+                            Choose the difficulty range (in Lichess puzzle rating) for your
+                            search. If no rating is chosen, all puzzles fitting the specified
+                            piece combination will be selected.
+                        </li>
+                        <li>
+                            Click Submit.
+                        </li>
+                    </ol>
+                </p>
+            </div>
+            <div class="col">
+                <form action="/" method="POST">
+                    <p>Your pieces:</p>
+                    <input type="checkbox" id="my_pawn" name="my_pawn" value="P">
+                    <label for="my_pawn"> Pawn</label><br>
+                    <input type="checkbox" id="my_bishop" name="my_bishop" value="B">
+                    <label for="my_bishop"> Bishop</label><br>
+                    <input type="checkbox" id="my_knight" name="my_knight" value="N">
+                    <label for="my_knight"> Knight</label><br>
+                    <input type="checkbox" id="my_rook" name="my_rook" value="R">
+                    <label for="my_rook"> Rook</label><br>
+                    <input type="checkbox" id="my_queen" name="my_queen" value="Q">
+                    <label for="my_queen"> Queen</label><br><br>
+                    <p>Opponent pieces:</p>
+                    <input type="checkbox" id="op_pawn" name="op_pawn" value="p">
+                    <label for="op_pawn"> Pawn</label><br>
+                    <input type="checkbox" id="op_bishop" name="op_bishop" value="b">
+                    <label for="op_bishop"> Bishop</label><br>
+                    <input type="checkbox" id="op_knight" name="op_knight" value="n">
+                    <label for="op_knight"> Knight</label><br>
+                    <input type="checkbox" id="op_rook" name="op_rook" value="r">
+                    <label for="op_rook"> Rook</label><br>
+                    <input type="checkbox" id="op_queen" name="op_queen" value="q">
+                    <label for="op_queen"> Queen</label><br><br>
+                    <p>Rating Range:</p>
+                    <input type="text" id="lower_rating" name="lower_rating" placeholder="Lower"><input type="text" id="upper_rating" name="upper_rating" placeholder="Upper"><br><br>
+                    <input type="submit" value="Submit">
+                </form>
+            </div>
         </div>
     </div>
 </body>
