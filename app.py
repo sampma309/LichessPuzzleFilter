@@ -54,7 +54,11 @@ def index():
     if request.method == "GET":
 
         # Initial load
+        with open('static/counter.txt', 'w') as counter:
+            counter.write('')
+        counter.close()
         return render_template('index.html', puzzle_url='')
+        
 
 
 @app.route("/puzzles")
