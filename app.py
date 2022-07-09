@@ -7,8 +7,6 @@ import helpers
 
 app = Flask(__name__)
 
-counter = 0
-
 @app.route("/", methods=["GET", "POST"])
 def index():
 
