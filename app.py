@@ -7,8 +7,6 @@ import helpers
 
 app = Flask(__name__)
 
-counter = 0
-
 @app.route("/", methods=["GET", "POST"])
 def index():
 
@@ -71,6 +69,7 @@ def puzzles():
 
     # Iterate counter
     i += 1
+ 
 
     # Write new counter
     with open('static/counter.txt', 'w') as counter:
@@ -79,8 +78,10 @@ def puzzles():
     # Open puzzle data and output the ith puzzle in the list
     file = open('static/puzzles.json')
     puzzles = json.load(file)
+    num_puzzles = len(puzzles['Rating'])
 
     return render_template('puzzles.html', rating=puzzles['Rating'][i], 
                                            moves=puzzles['Moves'][i], 
                                            PuzzleId=puzzles['PuzzleId'][i], 
-                                           URL=puzzles['EncodedURL'][i])
+                                           URL=puzzles['EncodedURL'][i],
+                                           i=i, num_puzzles=num_puzzles)
