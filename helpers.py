@@ -54,10 +54,6 @@ def find_puzzle(pieces, lower_rating, upper_rating):
         puzzles['Moves'].append(row[0])
         puzzles['Rating'].append(row[1])
         puzzles['EncodedURL'].append(row[3])
-        
-    
-    # Return list of puzzles
-    print(puzzles)
 
     # Write dictionary to JSON file
     with open('static/puzzles.json', 'w') as file:
