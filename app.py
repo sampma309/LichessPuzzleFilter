@@ -46,6 +46,15 @@ def index():
         # static/puzzles.json
         helpers.find_puzzle(pieces, lower_rating, upper_rating)
 
+        with open('static/puzzles.json', 'r') as puzzle_list:
+            puzzles = json.load(puzzle_list)
+            print(puzzles['Rating'])
+            if not puzzles['Rating']:
+                error = 'No puzzles found. Try a different piece combination.'
+                print('An error has occurred')
+                puzzle_list.close()
+                return render_template('index.html', error=error)
+
         # Move to puzzles page for actual puzzle solving
         return redirect("/puzzles")
     
