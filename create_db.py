@@ -15,13 +15,13 @@ import base64
 def main():
 
     # Create connection to puzzles.db
-    db = helpers.create_connection('puzzles.db')
+    db = helpers.create_connection('static/puzzles.db')
 
     # Create table 'puzzles' in puzzles.db
     create_table(db)
     
     # Read data from puzzles.csv and import to puzzles.db
-    import_data('puzzles.csv', db)
+    import_data('static/puzzles.csv', db)
 
     # Create index on PuzzleId column to speed up remaining steps
     db.execute('CREATE INDEX PuzzleIdIndex ON puzzles (PuzzleId);')
