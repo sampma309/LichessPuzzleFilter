@@ -172,12 +172,14 @@ def encode_puzzles(db):
     encoded_urls = []
     counter = 0
 
+    # Get necessary information for each puzzle from DB
     for row in cur.execute("SELECT FEN, Moves, LastMove, PuzzleId FROM puzzles;"):
         fen = row[0]
         moves = row[1].split()
         last_move = row[2]
         board = chess.Board(fen)
 
+        # Create the solution to the puzzle in algebraic notation
         variation = []
         while moves:
             move = moves.pop(0)
