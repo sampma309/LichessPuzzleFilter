@@ -191,7 +191,7 @@ def encode_puzzles(db):
                 
         # Encode the string
         listudy_encode = base64.standard_b64encode(encode_string.encode()).decode('utf-8')
-        encoded_urls.append([row[3], listudy_encode])
+        encoded_urls.append([row[3], variation, listudy_encode])
 
         counter += 1
 
@@ -201,7 +201,7 @@ def encode_puzzles(db):
     for url in encoded_urls:
 
         # Add encoded URL column
-        cur.execute("UPDATE puzzles SET EncodedURL = ? WHERE PuzzleId = ?;", [url[1], url[0]])
+        cur.execute("UPDATE puzzles SET EncodedURL = ?, Moves = ? WHERE PuzzleId = ?;", [url[2], url[1], url[0]])
 
 
 if __name__ == '__main__':
