@@ -7,6 +7,7 @@ import helpers
 
 app = Flask(__name__)
 
+# Homepage
 @app.route("/", methods=["GET", "POST"])
 def index():
 
@@ -67,7 +68,7 @@ def index():
         return render_template('index.html', puzzle_url='')
         
 
-
+# Page where puzzles are solved
 @app.route("/puzzles")
 def puzzles():
     
