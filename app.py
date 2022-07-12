@@ -46,6 +46,7 @@ def index():
         # static/puzzles.json
         helpers.find_puzzle(pieces, lower_rating, upper_rating)
 
+        # Make sure puzzles are found
         with open('static/puzzles.json', 'r') as puzzle_list:
             puzzles = json.load(puzzle_list)
             if not puzzles['Rating']:
