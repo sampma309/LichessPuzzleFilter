@@ -48,7 +48,6 @@ def index():
 
         with open('static/puzzles.json', 'r') as puzzle_list:
             puzzles = json.load(puzzle_list)
-            print(puzzles['Rating'])
             if not puzzles['Rating']:
                 error = 'No puzzles found. Try a different piece combination.'
                 print('An error has occurred')
