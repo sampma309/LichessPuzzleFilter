@@ -1,10 +1,3 @@
-"""This program creates a SQLite database from a CSV file which can be downloaded
-   from Lichess. In order to parse the puzzles correctly, the CSV file must be named
-   'puzzles.csv' and no additional columns may be added or removed from the as-downloaded 
-   file, although lines can be deleted if you wish to work with only a subset of the 
-   full 2.6 million puzzle database."""
-
-
 import helpers
 import chess
 from sqlite3 import Error
@@ -13,6 +6,11 @@ import base64
 
 
 def main():
+    """This program creates a SQLite database from a CSV file which can be downloaded
+       from Lichess. In order to parse the puzzles correctly, the CSV file must be named
+       'puzzles.csv' and no additional columns may be added or removed from the as-downloaded 
+       file, although lines can be deleted if you wish to work with only a subset of the 
+       full 2.6 million puzzle database."""
 
     # Create connection to puzzles.db
     db = helpers.create_connection('static/puzzles.db')
@@ -43,6 +41,7 @@ def main():
 
 
 def create_table(db):
+    """Creates static/puzzles.db where all puzzle information will be stored."""
     
     try:
         db.execute('CREATE TABLE puzzles("PuzzleId" TEXT, "FEN" TEXT, "Moves" TEXT, "LastMove" TEXT, "Rating" INTEGER, "Pieces" TEXT, "EncodedURL" TEXT);')
@@ -52,6 +51,8 @@ def create_table(db):
 
 
 def import_data(file, db):
+    """Reads puzzle information from static/puzzles.csv and writes all the necessary
+       to static/puzzles.db for further processing"""
 
     # Create database cursor for writing data
     cur = db.cursor()
@@ -84,6 +85,11 @@ def import_data(file, db):
         csvfile.close()
     
 def update_fen(db):
+    """Reads the FEN for each line in the database, which by default is the position
+       one move before the start of the puzzle. Makes the first move in the move list
+       and returns the FEN of the position at the start of the puzzle. Also copies the
+       first move over to the LastMove column so that the previous move can be shown
+       on the puzzle board."""
 
     cur = db.cursor()
 
@@ -118,7 +124,8 @@ def update_fen(db):
         moves = ' '.join(moves)
 
         # Update the FEN and move list for the puzzle
-        cur.execute("UPDATE puzzles SET FEN = ?, Moves = ?, LastMove = ? WHERE PuzzleId = ?;", [new_fen, moves, first_move, PuzzleId])
+        cur.execute("UPDATE puzzles SET FEN = ?, Moves = ?, LastMove = ? WHERE PuzzleId = ?;", 
+                    [new_fen, moves, first_move, PuzzleId])
         
         counter += 1
         if counter % 10000 == 0:
@@ -127,6 +134,10 @@ def update_fen(db):
     print("All FENs and move lists updated.")
 
 def create_piece_list(db):
+    """Reads the FEN for the starting position of each puzzle and creates a list
+       of the pieces each player has in the Pieces column of static/puzzles.db. By
+       convention, upper-case letters correspond to pieces belonging to the player."""
+
     cur = db.cursor()
 
     # Initialize list of FENs and pieces for each puzzle
@@ -159,7 +170,8 @@ def create_piece_list(db):
         pieces[counter] = ''.join(sorted(pieces[counter]))
 
         # Add the pieces column 
-        cur.execute("UPDATE puzzles SET Pieces = ? WHERE PuzzleId = ?;", [pieces[counter], fen[1]])
+        cur.execute("UPDATE puzzles SET Pieces = ? WHERE PuzzleId = ?;", 
+                    [pieces[counter], fen[1]])
         counter += 1
 
         if counter % 10000 == 0:
@@ -168,6 +180,11 @@ def create_piece_list(db):
     print("Piece lists complete.")
 
 def encode_puzzles(db):
+    """In acccordance with the Listudy documentation (https://listudy.org/en/webmaster/custom-tactics),
+       this function gathers the FEN of the starting position, the correct variation, and 
+       the previous move and creates a string that will be used as the src in an embedded
+       iframe containing the puzzle."""
+
     cur = db.cursor()
     encoded_urls = []
     counter = 0
@@ -203,7 +220,8 @@ def encode_puzzles(db):
     for url in encoded_urls:
 
         # Add encoded URL column
-        cur.execute("UPDATE puzzles SET EncodedURL = ?, Moves = ? WHERE PuzzleId = ?;", [url[2], url[1], url[0]])
+        cur.execute("UPDATE puzzles SET EncodedURL = ?, Moves = ? WHERE PuzzleId = ?;", 
+                    [url[2], url[1], url[0]])
 
 
 if __name__ == '__main__':
