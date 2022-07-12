@@ -46,7 +46,7 @@ def find_puzzle(pieces, lower_rating, upper_rating):
     """
 
     # Connect to database and execute query
-    db = create_connection('puzzles.db')
+    db = create_connection('static/puzzles.db')
     cursor = db.cursor()
     puzzles = {'PuzzleId': [], 'Moves': [], 'Rating': [], 'EncodedURL': []}
     for row in cursor.execute("SELECT Moves, Rating, PuzzleId, EncodedURL FROM puzzles WHERE Pieces = (?) AND RATING >= ? AND RATING <= ? ORDER BY RANDOM()", [pieces, lower_rating, upper_rating]):
