@@ -11,6 +11,6 @@ Instructions for running locally:
 
 Optionally, you can also change the complete set of puzzles. To do so:
 1. Download the puzzle database from https://database.lichess.org/#puzzles and remove as many lines as you would like. Note: the complete database contains ~2.6 million puzzles, but I have included a database of only 50,000 puzzles by default.
-2. Save the downloaded .csv file in the top-level directory as 'puzzles.csv'
-3. Delete puzzles.db
-4. After activating the virtual environment, run: python3 -m create_db.py (Note: depending on the size of your puzzle list, this might take a few minutes)
+2. Save the downloaded .csv file in the 'static/' directory as 'puzzles.csv'
+3. Delete 'static/puzzles.db'
+4. After activating the virtual environment, while in the top-level directory, run: python3 create_db.py (Note: depending on the size of your puzzle list, this might take a few minutes)
