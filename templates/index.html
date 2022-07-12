@@ -61,8 +61,11 @@
                     <input type="checkbox" id="op_queen" name="op_queen" value="q">
                     <label for="op_queen"> Queen</label><br><br>
                     <p>Rating Range:</p>
-                    <input type="text" id="lower_rating" name="lower_rating" placeholder="Lower"><input type="text" id="upper_rating" name="upper_rating" placeholder="Upper"><br><br>
+                    <input type="text" id="lower_rating" name="lower_rating" placeholder="Lower" size="4" maxlength="4">
+                    <span> - </span>
+                    <input type="text" id="upper_rating" name="upper_rating" placeholder="Upper" size="4" maxlength="4"><br><br>
                     <input type="submit" value="Submit">
+                    <p id="error"><span style="color:red">{{ error }}</span></p>
                 </form>
             </div>
         </div>
