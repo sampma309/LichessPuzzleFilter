@@ -14,3 +14,6 @@ Optionally, you can also change the complete set of puzzles. To do so:
 2. Save the downloaded .csv file in the 'static/' directory as 'puzzles.csv'
 3. Delete 'static/puzzles.db'
 4. After activating the virtual environment, while in the top-level directory, run: python3 create_db.py (Note: depending on the size of your puzzle list, this might take a few minutes)
+
+
+Credit for the embedded tactic generator goes to Arne Vogel and the rest of the contributors to listudy.org. Without that tool, I wouldn't have been able to do this at all.
