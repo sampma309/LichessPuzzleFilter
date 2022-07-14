@@ -46,6 +46,7 @@ def puzzles():
     # Get a random puzzle
     puzzle = helpers.find_puzzle(pieces, lower_rating, upper_rating)
 
+    # Get URL for embedding with Listudy
     url = helpers.encode_puzzle(puzzle)
 
     # Send to an error page if no puzzles are found
