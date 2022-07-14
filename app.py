@@ -2,7 +2,6 @@
 # Michael Samp
 
 from flask import Flask, render_template, request, redirect
-import json
 import helpers
 
 app = Flask(__name__)
@@ -32,6 +31,7 @@ def puzzles():
     pieces += request.args.get('op_rook', '')
     pieces += request.args.get('op_queen', '')
 
+    # Created sorted string to search for in DB
     pieces = ''.join(sorted(pieces))
 
     # Get form value for rating or use default value
@@ -45,9 +45,11 @@ def puzzles():
     # Get a random puzzle
     puzzle = helpers.find_puzzle(pieces, lower_rating, upper_rating)
 
+    # Send to an error page if no puzzles are found
     if not puzzle:
         return redirect('/oops')
 
+    # Render the puzzle page
     return render_template('puzzles.html', rating=puzzle[1], 
                                            moves=puzzle[0], 
                                            PuzzleId=puzzle[2], 
