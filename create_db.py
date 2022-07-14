@@ -33,9 +33,6 @@ def main():
     # Create index on Pieces column so webpage will return puzzles more quickly
     db.execute('CREATE INDEX PiecesIndex ON puzzles (Pieces);')
 
-    # Create encoded URLs column
-    encode_puzzles(db)
-
     db.commit()
     db.close()
 
@@ -109,23 +106,30 @@ def update_fen(db):
     # Iterate over every puzzle
     for line in original_lines:
         
+        # Get information from puzzle and initialize a board
         PuzzleId = line[0]
         original_fen = line[1]
-        moves = line[2]
-        
-        # Make the first move in the puzzle, move it to the LastMove column 
-        # and update the FEN
-        moves = moves.split()
+        moves = line[2].split()
         board = chess.Board(original_fen)
+        
+        # Get the move just before the puzzle starts and the FEN of the puzzle starting position
         first_move = moves.pop(0)
         move_1 = chess.Move.from_uci(first_move)
         board.push(move_1)
         new_fen = board.fen()
-        moves = ' '.join(moves)
 
-        # Update the FEN and move list for the puzzle
+        # Create the solution to the puzzle in algebraic notation
+        variation = []
+        while moves:
+            move = moves.pop(0)
+            variation.append(board.san(chess.Move.from_uci(move)))
+            move_on_board = chess.Move.from_uci(move)
+            board.push(move_on_board)
+        variation = ' '.join(variation)
+
+        # Update the FEN, solution, and add the previous move
         cur.execute("UPDATE puzzles SET FEN = ?, Moves = ?, LastMove = ? WHERE PuzzleId = ?;", 
-                    [new_fen, moves, first_move, PuzzleId])
+                    [new_fen, variation, first_move, PuzzleId])
         
         counter += 1
         if counter % 10000 == 0:
@@ -178,50 +182,6 @@ def create_piece_list(db):
             print(f"{counter} piece lists added")
 
     print("Piece lists complete.")
-
-def encode_puzzles(db):
-    """In acccordance with the Listudy documentation (https://listudy.org/en/webmaster/custom-tactics),
-       this function gathers the FEN of the starting position, the correct variation, and 
-       the previous move and creates a string that will be used as the src in an embedded
-       iframe containing the puzzle."""
-
-    cur = db.cursor()
-    encoded_urls = []
-    counter = 0
-
-    # Get necessary information for each puzzle from DB
-    for row in cur.execute("SELECT FEN, Moves, LastMove, PuzzleId FROM puzzles;"):
-        fen = row[0]
-        moves = row[1].split()
-        last_move = row[2]
-        board = chess.Board(fen)
-
-        # Create the solution to the puzzle in algebraic notation
-        variation = []
-        while moves:
-            move = moves.pop(0)
-            variation.append(board.san(chess.Move.from_uci(move)))
-            move_on_board = chess.Move.from_uci(move)
-            board.push(move_on_board)
-        variation = ' '.join(variation)
-
-        # Create the string to encode
-        encode_string = f"{fen};{variation};{last_move}"
-                
-        # Encode the string
-        listudy_encode = base64.standard_b64encode(encode_string.encode()).decode('utf-8')
-        encoded_urls.append([row[3], variation, listudy_encode])
-
-        counter += 1
-
-        if counter % 10000 == 0:
-            print(f"{counter} puzzles encoded")
-
-    for url in encoded_urls:
-
-        # Add encoded URL column
-        cur.execute("UPDATE puzzles SET EncodedURL = ?, Moves = ? WHERE PuzzleId = ?;", 
-                    [url[2], url[1], url[0]])
 
 
 if __name__ == '__main__':
