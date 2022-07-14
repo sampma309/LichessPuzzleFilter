@@ -1,4 +1,5 @@
 import sqlite3
+import base64
 from sqlite3 import Error
 
 def create_connection(path):
@@ -49,12 +50,31 @@ def find_puzzle(pieces, lower_rating, upper_rating):
 
     # Get random puzzle from DB
     puzzle = []
-    for row in cursor.execute("SELECT Moves, Rating, PuzzleId, EncodedURL FROM puzzles WHERE Pieces = (?) AND RATING >= ? AND RATING <= ? ORDER BY RANDOM() LIMIT 1", [pieces, lower_rating, upper_rating]):
+    for row in cursor.execute("SELECT Moves, Rating, PuzzleId, LastMove, FEN FROM puzzles WHERE Pieces = (?) AND RATING >= ? AND RATING <= ? ORDER BY RANDOM() LIMIT 1", [pieces, lower_rating, upper_rating]):
         
         # Collect the puzzle information
         puzzle.append(row[0])  # Append moves
         puzzle.append(row[1])  # Append Rating
         puzzle.append(row[2])  # Append ID
-        puzzle.append(row[3])  # Append URL
+        puzzle.append(row[3])  # Append last move
+        puzzle.append(row[4])  # Append FEN
     
     return puzzle
+
+def encode_puzzle(puzzle):
+    """In acccordance with the Listudy documentation (https://listudy.org/en/webmaster/custom-tactics),
+       this function gathers the FEN of the starting position, the correct variation, and 
+       the previous move and creates a string that will be used as the src in an embedded
+       iframe containing the puzzle."""
+
+    # Get necessary information from the puzzle
+    fen = puzzle[4]
+    moves = puzzle[0].split()
+    last_move = puzzle[3]
+
+    # Create the string to encode
+    encode_string = f"{fen};{moves};{last_move}"
+            
+    # Encode the string
+    return base64.standard_b64encode(encode_string.encode()).decode('utf-8')
+

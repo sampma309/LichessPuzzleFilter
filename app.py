@@ -46,6 +46,8 @@ def puzzles():
     # Get a random puzzle
     puzzle = helpers.find_puzzle(pieces, lower_rating, upper_rating)
 
+    url = helpers.encode_puzzle(puzzle)
+
     # Send to an error page if no puzzles are found
     if not puzzle:
         return redirect('/oops')
@@ -54,7 +56,7 @@ def puzzles():
     return render_template('puzzles.html', rating=puzzle[1], 
                                            moves=puzzle[0], 
                                            PuzzleId=puzzle[2], 
-                                           URL=puzzle[3])
+                                           URL=url)
 
 # Route if no puzzles are found
 @app.route("/oops")
