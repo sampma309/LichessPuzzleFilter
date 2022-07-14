@@ -1,6 +1,5 @@
 import sqlite3
 from sqlite3 import Error
-import json
 
 def create_connection(path):
     """Creates and returns a connection to the local copy of the Lichess puzzle
@@ -31,29 +30,31 @@ def find_puzzle(pieces, lower_rating, upper_rating):
 
         Arguments:
 
-         - pieces: a string containing both the upper and lower case letters
-                      of the user-specified pieces (e.g., pPrR) would be for
-                      pawns and rooks
+         - pieces:  a string containing both the upper and lower case letters
+                    of the user-specified pieces (e.g., pPrR) would be for
+                    pawns and rooks
+
+         - lower/upper_rating:  the lower and upper bounds for the puzzle difficulty
         
         Returns:
 
-         - puzzle:    A two column list of the puzzles returned by the SQL query.
-                      The first column contains the FEN for the starting position
-                      of the puzzle. The second column contains a list of the 
-                      correct moves in UCI notation.
+         - puzzle:  a four-element list containing the solution move list in SAN notation,
+                    the puzzle rating, the puzzle ID on Lichess, and the encoded URL needed
+                    to generate the embedded puzzle.  
     """
 
     # Connect to database and execute query
     db = create_connection('static/puzzles.db')
     cursor = db.cursor()
-    puzzles = {'PuzzleId': [], 'Moves': [], 'Rating': [], 'EncodedURL': []}
-    for row in cursor.execute("SELECT Moves, Rating, PuzzleId, EncodedURL FROM puzzles WHERE Pieces = (?) AND RATING >= ? AND RATING <= ? ORDER BY RANDOM()", [pieces, lower_rating, upper_rating]):
-        puzzles['PuzzleId'].append(row[2])
-        puzzles['Moves'].append(row[0])
-        puzzles['Rating'].append(row[1])
-        puzzles['EncodedURL'].append(row[3])
 
-    # Write dictionary to JSON file
-    with open('static/puzzles.json', 'w') as file:
-        json.dump(puzzles, file)
-    return None
+    # Get random puzzle from DB
+    puzzle = []
+    for row in cursor.execute("SELECT Moves, Rating, PuzzleId, EncodedURL FROM puzzles WHERE Pieces = (?) AND RATING >= ? AND RATING <= ? ORDER BY RANDOM() LIMIT 1", [pieces, lower_rating, upper_rating]):
+        
+        # Collect the puzzle information
+        puzzle.append(row[0])  # Append moves
+        puzzle.append(row[1])  # Append Rating
+        puzzle.append(row[2])  # Append ID
+        puzzle.append(row[3])  # Append URL
+    
+    return puzzle

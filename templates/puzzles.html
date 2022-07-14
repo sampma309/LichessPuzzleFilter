@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>CS50x Final Project</title>
+    <title>Lichess Puzzle Filter</title>
     <link rel="stylesheet" href="static/styles.css">
     <meta charset="utf-8">
     <meta name="viewport" content="width-device-width, initial-scale=1">
@@ -16,7 +16,6 @@
                 Puzzles involving promotion will not work due to a typo in the Listudy engine.
                 A pull request has been submitted.
             </div>
-            <p id="puzzle-counter" class="mx-auto">Puzzle {{ i + 1 }} of {{ num_puzzles }}</p>
             <p id="rating" class="mx-auto">Rating: {{ rating }}</p>
             <p hidden id="solution" class="mx-auto">Solution: {{ moves }}</p>
             <iframe id="puzzle" class="mx-auto" width="400" height="480" frameborder="0" src="https://listudy.org/en/iframe/custom-tactic#{{ URL }}"></iframe><br>
