@@ -46,14 +46,17 @@ def find_puzzle(pieces, lower_rating, upper_rating):
     # Connect to database and execute query
     db = create_connection('static/puzzles.db')
     cursor = db.cursor()
-    puzzles = {'PuzzleId': [], 'Moves': [], 'Rating': [], 'EncodedURL': []}
-    for row in cursor.execute("SELECT Moves, Rating, PuzzleId, EncodedURL FROM puzzles WHERE Pieces = (?) AND RATING >= ? AND RATING <= ? ORDER BY RANDOM()", [pieces, lower_rating, upper_rating]):
-        puzzles['PuzzleId'].append(row[2])
-        puzzles['Moves'].append(row[0])
-        puzzles['Rating'].append(row[1])
-        puzzles['EncodedURL'].append(row[3])
 
-    # Write dictionary to JSON file
-    with open('static/puzzles.json', 'w') as file:
-        json.dump(puzzles, file)
-    return None
+    # Get random puzzle from DB
+    puzzle = []
+    for row in cursor.execute("SELECT Moves, Rating, PuzzleId, EncodedURL FROM puzzles WHERE Pieces = (?) AND RATING >= ? AND RATING <= ? ORDER BY RANDOM() LIMIT 1", [pieces, lower_rating, upper_rating]):
+        # Append moves
+        puzzle.append(row[0])
+        #Append Rating
+        puzzle.append(row[1])
+        # Append ID
+        puzzle.append(row[2])
+        # Append URL
+        puzzle.append(row[3])
+    
+    return puzzle
