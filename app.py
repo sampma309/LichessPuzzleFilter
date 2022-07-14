@@ -1,5 +1,6 @@
-# CS50x Final Project
-# Michael Samp
+# Lichess Puzzle Filter
+# Made as a CS50x Final Project
+# by Michael Samp
 
 from flask import Flask, render_template, request, redirect
 import helpers
