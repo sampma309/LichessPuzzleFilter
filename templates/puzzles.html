@@ -12,13 +12,9 @@
     
     <div class="d-flex justify-content-center">
         <div class="d-flex flex-column">
-            <div class="alert alert-primary" role="alert">
-                Puzzles involving promotion will not work due to a typo in the Listudy engine.
-                A pull request has been submitted.
-            </div>
             <p id="rating" class="mx-auto">Rating: {{ rating }}</p>
             <p hidden id="solution" class="mx-auto">Solution: {{ moves }}</p>
-            <iframe id="puzzle" class="mx-auto" width="400" height="480" frameborder="0" src="https://listudy.org/en/iframe/custom-tactic#{{ URL }}"></iframe><br>
+            <iframe id="puzzle" class="mx-auto" width="400" height="500" frameborder="0" src="https://listudy.org/en/iframe/custom-tactic#{{ URL }}"></iframe><br>
             <button type="button" class="btn btn-primary my-btn mx-auto my-1" onclick="showSolution()">Show Solution</button>
             <button type="button" class="btn btn-success my-btn mx-auto my-1" onClick="refreshPage()">Next Puzzle</button>
             <a class="btn btn-secondary my-btn mx-auto my-1" href="/" role="button">Return to homepage</a>
