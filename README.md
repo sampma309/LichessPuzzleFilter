@@ -1,13 +1,14 @@
-# CS50-Final-Project
+# Lichess Puzzle Filter
 
 The goal of this project is to take the publicly available database of Lichess puzzles (https://database.lichess.org/#puzzles) and filter it so you can work on puzzles involving a specific set of pieces. For example: if you wanted to work on rook and pawn endgames, the app will return only puzzles containing rooks and pawns.
 
 Instructions for running locally:
 
-1. Clone repository by typing: git clone https://www.github.com/sampma309/CS50-Final-Project
-2. Activate virtual environment with: source venv/bin/activate
-3. Run application with: flask run
-4. Go to http://127.0.0.1:5000 in browser (note: 5000 is the default port, but Flask may use a different one)
+1. Clone repository by typing: ```git clone https://www.github.com/sampma309/LichessPuzzleFilter```
+2. Create and activate a virtual environment
+3. Install dependencies with ```pip install -r requirements.txt```
+4. Run application with: ```flask run```
+5. Go to http://127.0.0.1:5000 in browser (note: 5000 is the default port, but Flask may use a different one)
 
 Optionally, you can also change the complete set of puzzles. To do so:
 1. Download the puzzle database from https://database.lichess.org/#puzzles and remove as many lines as you would like. Note: the complete database contains ~2.6 million puzzles, but I have included a database of only 150,000 puzzles by default.
